@@ -1,0 +1,49 @@
+# OpenWebUI — "완성형 챗봇 서비스" 데모 (과정 시작 전 5분 시연용)
+# CPU만으로 동작: Ollama + 경량 모델(qwen2.5:1.5b). OpenAI 키·인터넷 불필요.
+# 메시지: 띄우는 것 자체는 이렇게 쉽다 → 본 과정에서 "이 박스 안"을 직접 만든다.
+services:
+  # ① 로컬 LLM 엔진 (CPU 전용 — GPU 설정 없음)
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama-demo
+    volumes:
+      - ollama-data:/root/.ollama        # 받은 모델 가중치 영속화
+    restart: unless-stopped
+
+  # ② 최초 1회 모델 자동 다운로드 (받고 나면 종료) — qwen2.5:1.5b ≈ 0.9GB
+  ollama-pull:
+    image: ollama/ollama:latest
+    container_name: ollama-pull
+    depends_on:
+      - ollama
+    environment:
+      - OLLAMA_HOST=ollama:11434
+    entrypoint: ["/bin/sh", "-c"]
+    command: >
+      "until ollama list >/dev/null 2>&1; do echo 'ollama 기동 대기...'; sleep 1; done;
+       ollama pull qwen2.5:1.5b;
+       echo '모델 준비 완료'"
+    restart: "no"
+
+  # ③ 완성형 챗봇 UI — Ollama 에만 연결 (OpenAI 비활성)
+  openwebui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: openwebui-demo
+    depends_on:
+      - ollama
+    ports:
+      - "3000:8080"                       # 브라우저 http://localhost:3000
+    environment:
+      # 로컬 Ollama 연동 — 키 한 줄도 필요 없음
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - ENABLE_OPENAI_API=False           # 외부 OpenAI 끔 — 완전 로컬/오프라인
+      # 데모 속도 우선: 로그인 화면 생략하고 바로 대화 (운영 시엔 True 권장)
+      - WEBUI_AUTH=False
+      - WEBUI_NAME=ChatGPT 과정 — 완성형 데모 (로컬 LLM)
+    volumes:
+      - openwebui-data:/app/backend/data  # 대화 기록·설정 영속화
+    restart: unless-stopped
+
+volumes:
+  ollama-data:
+  openwebui-data:

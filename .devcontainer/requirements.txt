@@ -1,0 +1,30 @@
+# 슬라이드 실습에서 사용하는 패키지 (Day 1~3)
+# Dev Container 가 생성될 때 자동 설치된다 — 수강생은 직접 설치할 필요 없음.
+
+# 데이터 처리 / 머신러닝 (Day 1)
+pandas
+numpy
+scikit-learn
+pyarrow            # parquet 저장/로드 (reviews_clean.parquet)
+
+# OpenAI API / 챗봇 (Day 2)
+openai
+python-dotenv
+
+# 웹 서비스 (Day 3)
+streamlit
+gradio
+
+# 최신 기술 — LangChain / RAG / MCP (Day 3)
+# Day 3 실습(RAG·Agent)은 이 저장소의 notebooks/ 로 자체완결 진행한다.
+langchain
+langchain-openai
+langchain-community
+langchain-text-splitters
+faiss-cpu               # RAG 벡터스토어 (06_rag.ipynb)
+pymupdf                 # PDF 문서 RAG (PyMuPDFLoader — 내 문서로 교체 시)
+mcp                     # MCP 서버 (mcp/library_server.py)
+
+# 노트북
+jupyter
+ipykernel

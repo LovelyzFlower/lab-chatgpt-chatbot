@@ -1,0 +1,50 @@
+{
+  "name": "ChatGPT NLP Handson (Python 3.11)",
+  // Microsoft 공식 Python 3.11 베이스 (git / vscode 사용자 등 포함)
+  "image": "mcr.microsoft.com/devcontainers/python:1-3.11-bookworm",
+
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    // Astral uv — 초고속 Python 패키지/프로젝트 매니저
+    "ghcr.io/va-h/devcontainers-features/uv:1": {},
+    // Node.js — OpenAI Codex CLI(@openai/codex) 설치에 필요
+    "ghcr.io/devcontainers/features/node:1": { "version": "lts" }
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-toolsai.jupyter",
+        "ms-toolsai.jupyter-renderers",
+        "charliermarsh.ruff",
+        "shd101wyy.markdown-preview-enhanced",
+        "bierner.markdown-mermaid",
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+        "anthropic.claude-code",
+        "openai.chatgpt"
+      ],
+      "settings": {
+        // 컨테이너의 시스템 Python 을 그대로 사용 — venv 불필요
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "python.terminal.activateEnvironment": false,
+        "files.eol": "\n"
+      }
+    }
+  },
+
+  // 실습용 웹 도구 포트 자동 포워딩
+  "forwardPorts": [8501, 7860, 8888],
+  "portsAttributes": {
+    "8501": { "label": "Streamlit" },
+    "7860": { "label": "Gradio" },
+    "8888": { "label": "Jupyter" }
+  },
+
+  "remoteUser": "vscode",
+  // 컨테이너 생성 직후 1회: 실습 패키지 설치 + .env 템플릿 생성
+  "postCreateCommand": "bash .devcontainer/post-create.sh"
+}

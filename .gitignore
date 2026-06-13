@@ -1,0 +1,20 @@
+# 비밀 — 절대 commit 금지
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.ipynb_checkpoints/
+
+# 실습 산출물 / 생성 데이터
+*.parquet
+data/reviews.csv          # make_reviews.py 가 생성 (커밋하지 않음)
+faiss_index/              # RAG 벡터 인덱스 캐시 (생성물)
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Gradio
+.gradio/
+flagged/
