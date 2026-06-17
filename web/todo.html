@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Todo App</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #f4f4f9; 
+            display: flex; 
+            justify-content: center; 
+            padding-top: 50px; 
+            margin: 0; 
+        }
+        .todo-container { 
+            background: white; 
+            padding: 20px 30px; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+            width: 100%; 
+            max-width: 400px; 
+        }
+        h1 { 
+            margin-top: 0; 
+            color: #333; 
+            text-align: center; 
+        }
+        .input-group { 
+            display: flex; 
+            gap: 10px; 
+            margin-bottom: 20px; 
+        }
+        input[type="text"] { 
+            flex: 1; 
+            padding: 10px; 
+            border: 1px solid #ddd; 
+            border-radius: 4px; 
+            font-size: 16px; 
+            outline: none;
+        }
+        input[type="text"]:focus {
+            border-color: #5c6bc0;
+        }
+        button { 
+            padding: 10px 15px; 
+            border: none; 
+            background: #5c6bc0; 
+            color: white; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-size: 16px; 
+            transition: background 0.2s;
+        }
+        button:hover { 
+            background: #3f51b5; 
+        }
+        ul { 
+            list-style: none; 
+            padding: 0; 
+            margin: 0; 
+        }
+        li { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 10px; 
+            border-bottom: 1px solid #eee; 
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        li:last-child { 
+            border-bottom: none; 
+        }
+        .delete-btn { 
+            background: #e53935; 
+            padding: 5px 10px; 
+            font-size: 14px; 
+        }
+        .delete-btn:hover { 
+            background: #c62828; 
+        }
+        .completed { 
+            text-decoration: line-through; 
+            color: #aaa; 
+        }
+        .task-text { 
+            cursor: pointer; 
+            flex: 1; 
+            user-select: none;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="todo-container">
+        <h1>할 일 목록</h1>
+        <div class="input-group">
+            <input type="text" id="todoInput" placeholder="할 일을 입력하세요..." autocomplete="off">
+            <button id="addBtn">추가</button>
+        </div>
+        <ul id="todoList"></ul>
+    </div>
+
+    <script>
+        const todoInput = document.getElementById('todoInput');
+        const addBtn = document.getElementById('addBtn');
+        const todoList = document.getElementById('todoList');
+
+        // 할 일 추가 함수
+        function addTodo() {
+            const text = todoInput.value.trim();
+            if (text === '') return;
+
+            // 새로운 목록(li) 생성
+            const li = document.createElement('li');
+
+            // 텍스트를 담을 span 생성
+            const span = document.createElement('span');
+            span.textContent = text;
+            span.className = 'task-text';
+            
+            // 텍스트 클릭 시 완료(취소선) 처리
+            span.addEventListener('click', function() {
+                span.classList.toggle('completed');
+            });
+
+            // 삭제 버튼 생성
+            const deleteBtn = document.createElement('button');
+            deleteBtn.textContent = '삭제';
+            deleteBtn.className = 'delete-btn';
+            
+            // 삭제 버튼 클릭 시 해당 li 제거
+            deleteBtn.addEventListener('click', function() {
+                li.remove();
+            });
+
+            // 요소 조립
+            li.appendChild(span);
+            li.appendChild(deleteBtn);
+            todoList.appendChild(li);
+
+            // 입력창 초기화 및 포커스
+            todoInput.value = '';
+            todoInput.focus();
+        }
+
+        // 추가 버튼 클릭 이벤트
+        addBtn.addEventListener('click', addTodo);
+
+        // 엔터키 입력 이벤트
+        todoInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addTodo();
+            }
+        });
+    </script>
+</body>
+</html>

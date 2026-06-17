@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오늘 뭐 먹지? (점심 메뉴 추천)</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #fff9c4; 
+            display: flex; 
+            justify-content: center; 
+            padding-top: 50px; 
+            margin: 0; 
+        }
+        .app-container { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1); 
+            width: 100%; 
+            max-width: 450px; 
+            text-align: center;
+        }
+        h1 { 
+            margin-top: 0; 
+            color: #ef6c00; 
+            font-size: 28px;
+        }
+        .desc {
+            color: #666;
+            margin-bottom: 25px;
+        }
+        .menu-display {
+            min-height: 350px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed #ffe082;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            background-color: #fffde7;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .menu-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: none; 
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .menu-name {
+            font-size: 32px;
+            font-weight: bold;
+            color: #333;
+            margin-top: 20px;
+            display: none; 
+            animation: slideUp 0.5s ease-in-out;
+        }
+        .placeholder-text {
+            color: #aaa;
+            font-size: 18px;
+        }
+        button { 
+            padding: 15px 30px; 
+            border: none; 
+            background: #ef6c00; 
+            color: white; 
+            border-radius: 30px; 
+            cursor: pointer; 
+            font-size: 18px; 
+            font-weight: bold;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px rgba(239, 108, 0, 0.3);
+            width: 100%;
+        }
+        button:hover { 
+            background: #e65100; 
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(239, 108, 0, 0.4);
+        }
+        button:active {
+            transform: translateY(1px);
+        }
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #ef6c00;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            display: none;
+            margin: auto;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <h1>오늘 점심 뭐 먹지?</h1>
+        <p class="desc">한국 직장인들의 소울푸드 중에서 골라드립니다!</p>
+        
+        <div class="menu-display" id="menuDisplay">
+            <p class="placeholder-text" id="placeholder">버튼을 눌러 메뉴를 추첨하세요!</p>
+            <div class="loader" id="loader"></div>
+            <img src="" alt="음식 사진" class="menu-image" id="menuImg">
+            <div class="menu-name" id="menuName"></div>
+        </div>
+
+        <button id="pickBtn">점심 메뉴 고르기 🎲</button>
+    </div>
+
+    <script>
+        const menus = [
+            { name: "김치찌개", img: "https://images.unsplash.com/photo-1580651315530-69c8e0026377?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+            { name: "제육볶음", img: "https://images.unsplash.com/photo-1628294895950-9805252327bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+            { name: "돈까스", img: "https://images.unsplash.com/photo-1598514982205-f36b96d1e8d4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+            { name: "순대국밥", img: "https://images.unsplash.com/photo-1617093727343-374698b1b08d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+            { name: "비빔밥", img: "https://images.unsplash.com/photo-1553163147-622ab57be1c7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+            { name: "짜장면 / 짬뽕", img: "https://images.unsplash.com/photo-1585032226651-759b368d7246?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+            { name: "초밥", img: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+            { name: "햄버거", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+            { name: "냉면", img: "https://images.unsplash.com/photo-1552611052-33e04de081de?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+            { name: "김밥 & 떡볶이", img: "https://images.unsplash.com/photo-1581349485608-9469926a8e5e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" }
+        ];
+
+        const pickBtn = document.getElementById('pickBtn');
+        const menuImg = document.getElementById('menuImg');
+        const menuName = document.getElementById('menuName');
+        const placeholder = document.getElementById('placeholder');
+        const loader = document.getElementById('loader');
+        
+        let isPicking = false;
+
+        pickBtn.addEventListener('click', function() {
+            if (isPicking) return; 
+            isPicking = true;
+
+            placeholder.style.display = 'none';
+            menuImg.style.display = 'none';
+            menuName.style.display = 'none';
+            loader.style.display = 'block';
+            pickBtn.textContent = '고르는 중...';
+            pickBtn.style.backgroundColor = '#ccc';
+            pickBtn.style.boxShadow = 'none';
+            pickBtn.style.cursor = 'not-allowed';
+
+            setTimeout(() => {
+                const randomIndex = Math.floor(Math.random() * menus.length);
+                const selectedMenu = menus[randomIndex];
+
+                const tempImg = new Image();
+                tempImg.src = selectedMenu.img;
+                tempImg.onload = () => {
+                    menuImg.src = selectedMenu.img;
+                    menuName.textContent = selectedMenu.name;
+                    
+                    loader.style.display = 'none';
+                    menuImg.style.display = 'block';
+                    menuName.style.display = 'block';
+                    
+                    pickBtn.textContent = '다시 고르기 🎲';
+                    pickBtn.style.backgroundColor = '#ef6c00';
+                    pickBtn.style.boxShadow = '0 4px 6px rgba(239, 108, 0, 0.3)';
+                    pickBtn.style.cursor = 'pointer';
+                    
+                    isPicking = false;
+                };
+            }, 1000); // 1초 대기
+        });
+    </script>
+</body>
+</html>
