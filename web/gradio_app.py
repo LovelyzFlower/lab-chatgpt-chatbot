@@ -16,7 +16,7 @@ load_dotenv()
 
 SYSTEM = "당신은 친절한 AI 어시스턴트입니다. 모르면 '확인 필요'라고만 답하세요."
 MAX_CHARS = 500  # 실습 5 Task 3 — 입력 길이 가드
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.3)
+llm = ChatOpenAI(model="gpt-5.4-mini", temperature=0.3)
 
 
 def respond(message, history):
@@ -45,7 +45,7 @@ def respond(message, history):
 
 demo = gr.ChatInterface(
     respond,
-    type="messages",
+    #type="messages",
     title="나만의 ChatGPT 💬 (Gradio)",
     description="Streamlit 버전과 비교해 보세요 — 어느 쪽이 우리 회사에 맞나요?",
 )

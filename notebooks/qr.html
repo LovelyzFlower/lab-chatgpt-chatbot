@@ -1,0 +1,14 @@
+<script>
+function _quCopy(btn){
+navigator.clipboard.writeText(btn.dataset.v).then(()=>{
+var t=btn.textContent;btn.textContent='✓ Copied';
+setTimeout(()=>btn.textContent=t,1500);
+}).catch(()=>{
+var ta=document.createElement('textarea');
+ta.value=btn.dataset.v;document.body.appendChild(ta);
+ta.select();document.execCommand('copy');document.body.removeChild(ta);
+var t=btn.textContent;btn.textContent='✓ Copied';
+setTimeout(()=>btn.textContent=t,1500);
+});
+}
+</script><div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--background-secondary,#1e1e2e);border:1px solid var(--border-color,#3b3b5c);border-radius:14px;padding:18px 22px;margin:6px 0;color:var(--text-primary,#cdd6f4);max-width:600px;"><div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;border-bottom:1px solid var(--border-color,#3b3b5c);padding-bottom:10px;"><span style="font-size:20px;">📱</span><span style="font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#f59e0b;">QR Code</span></div><div style="display:flex;flex-direction:column;align-items:center;gap:12px;"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUoAAAFKAQAAAABTUiuoAAAB9klEQVR4nO2bQY6cMBBFXwWkWbqlOcAcxdwgZ8qRcgM4St/AXrZk9LOwgWQWUdMS3YymaoFkeIsvlcr8KoOJO2P6cS8JjjrqqKOOOnokai166mXIZvViZmbD4QIc3YNGSVICYDYIEtBJkvQveowAR/egeSmhqAIwm0aopfYUAY4+gOqXvdVisuElAhz9T/Sf1hY1G+R32XMEOPpAtoKADKqJCgXV5dECHN2PTmZmdln3v9xjA3O1hM8Q4Og9UWtrKyFNHwVNHzdr9Xa0AEd3oFSP3pwgAJ2agw8SMdH8/fhyrY7WbEkq1bzXxRgK9d6GeLbOgta2arL2tlruvUljkGw4XICjO1CNoQChwLT0W8Q01/HTEwQ4eldUl2ExIcg9mn4mjNAeC8COFODofpcB3Wo1OmkEmsvY3mUv1+roX9lqU911T6zuENwTng2NupkNoSBde6QEkm6mcU3ZabR+Y3Tpt1LXCmwMkpTWskru4M+DrrOM0hxFvBpAB3FcDcaBAhx9pN9qZ8ewNca5B7zfOh+6nR1Pl0425JY3WJrl82h1dDs7BmC6zMZUx+/uMs6M5h4pddJYOy+vrfOikgpWh4Wh+HcZ50I/nx1Dfi8iA/FqEH9fjhXg6COzDKCNn1Q3QWJq7ZfPMs6Cmv+14Kijjjrq6BdC/wA83BzOLAdULwAAAABJRU5ErkJggg==" alt="QR Code" style="width:220px;height:220px;border-radius:10px;background:#fff;padding:8px;display:block;" /><div style="font-size:11px;color:var(--text-secondary,#a6adc8);word-break:break-all;text-align:center;">https://naver.com</div><div style="font-size:10px;color:var(--text-secondary,#a6adc8);">EC level: M · 17 chars encoded</div><button onclick="_quCopy(this)" data-v="https://naver.com" style="cursor:pointer;background:rgba(124,58,237,.15);color:#a78bfa;border:1px solid rgba(124,58,237,.35);border-radius:6px;padding:3px 10px;font-size:11px;margin-left:8px;font-family:inherit;white-space:nowrap;">Copy content</button></div></div>

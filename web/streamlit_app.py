@@ -14,35 +14,16 @@ from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 
 load_dotenv()
 
-PERSONAS = {
-    "친절한 도우미": "당신은 친절한 AI 어시스턴트입니다. 모르면 '확인 필요'라고만 답하세요.",
-    "엄격한 사서": "당신은 매우 격식 있는 사서입니다. 짧고 단정하게 답합니다.",
-    "친근한 친구": "당신은 친근한 동네 친구입니다. 반말로 편하게 답합니다.",
-}
-MAX_CHARS = 500  # 운영 가드 — 입력 길이 제한
+SYSTEM = "당신은 친절한 AI 어시스턴트입니다. 모르면 '확인 필요'라고만 답하세요."
 
 st.set_page_config(page_title="나만의 ChatGPT", page_icon="💬")
 st.title("나만의 ChatGPT 💬 (Streamlit)")
 
-# ── 사이드바: 페르소나 / temperature ──────────────────────────────
-with st.sidebar:
-    persona = st.selectbox("페르소나", list(PERSONAS.keys()))
-    temperature = st.slider("temperature", 0.0, 1.0, 0.3, 0.1)
-    if st.button("대화 초기화"):
-        st.session_state.clear()
-        st.rerun()
-    st.caption("FAQ:")
-    faq = st.radio(
-        "자주 묻는 질문", ["", "연차 며칠?", "재택 규정?", "API 키 관리법?"],
-        label_visibility="collapsed",
-    )
-
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=temperature)
+llm = ChatOpenAI(model="gpt-5.4-mini", temperature=0.3)
 
 # ── 대화 상태 ─────────────────────────────────────────────────────
 if "messages" not in st.session_state:
     st.session_state.messages = []          # [{"role", "content"}]
-    st.session_state.total_tokens = 0
 
 # 환영 메시지 (처음 1회)
 if not st.session_state.messages:
@@ -51,20 +32,14 @@ if not st.session_state.messages:
 for m in st.session_state.messages:
     st.chat_message(m["role"]).write(m["content"])
 
-# FAQ 버튼 또는 입력창
-user_input = st.chat_input(f"메시지 ({MAX_CHARS}자 이내)") or (faq or None)
+user_input = st.chat_input("메시지를 입력하세요")
 
 if user_input:
-    # 운영 가드 1 — 입력 길이
-    if len(user_input) > MAX_CHARS:
-        st.warning(f"입력은 {MAX_CHARS}자 이내로 부탁드립니다.")
-        st.stop()
-
     st.session_state.messages.append({"role": "user", "content": user_input})
     st.chat_message("user").write(user_input)
 
     # LangChain 메시지로 변환 (system + 누적 history)
-    msgs = [SystemMessage(content=PERSONAS[persona])]
+    msgs = [SystemMessage(content=SYSTEM)]
     for m in st.session_state.messages:
         cls = HumanMessage if m["role"] == "user" else AIMessage
         msgs.append(cls(content=m["content"]))
@@ -82,7 +57,3 @@ if user_input:
             st.write(answer)
 
     st.session_state.messages.append({"role": "assistant", "content": answer})
-    # 운영 가드 4 — 누적 비용(근사) 표시
-    st.session_state.total_tokens += len(user_input) + len(answer)
-    approx_cost = st.session_state.total_tokens / 4 * (0.3 / 1_000_000)
-    st.sidebar.metric("누적 비용(근사)", f"${approx_cost:.5f}")

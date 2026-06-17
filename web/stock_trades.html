@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Trade Tape</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Spectral:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0f1020;
+        --bg-2: #161835;
+        --card: #f7f5f0;
+        --ink: #0b0c1a;
+        --muted: #5a5f78;
+        --accent: #ff6b4a;
+        --accent-2: #1f8c94;
+        --line: #d9d6cf;
+        --good: #1b8f62;
+        --bad: #c0392b;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Space Grotesk", system-ui, sans-serif;
+        color: var(--ink);
+        background: radial-gradient(1200px 800px at 10% 10%, #1b1d3f, var(--bg)),
+          radial-gradient(900px 700px at 90% 20%, #102b3a, transparent);
+        min-height: 100vh;
+      }
+
+      .page {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 40px 24px 64px;
+        display: grid;
+        gap: 28px;
+      }
+
+      header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        color: #fefaf0;
+      }
+
+      .brand {
+        display: grid;
+        gap: 6px;
+      }
+
+      .brand h1 {
+        margin: 0;
+        font-size: clamp(28px, 4vw, 44px);
+        letter-spacing: -0.02em;
+      }
+
+      .brand p {
+        margin: 0;
+        color: #d4d6e8;
+        font-family: "Spectral", serif;
+      }
+
+      .chip {
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.12);
+        color: #fefaf0;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .grid {
+        display: grid;
+        gap: 24px;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      }
+
+      .card {
+        background: var(--card);
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: 0 20px 50px rgba(7, 9, 24, 0.35);
+      }
+
+      .card h2 {
+        margin: 0 0 12px;
+        font-size: 20px;
+      }
+
+      .subtle {
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      form {
+        display: grid;
+        gap: 14px;
+      }
+
+      label {
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      input,
+      select {
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+        font-family: inherit;
+        font-size: 15px;
+        background: #fff;
+      }
+
+      .row {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      }
+
+      button {
+        padding: 12px 16px;
+        border-radius: 12px;
+        border: none;
+        background: var(--accent);
+        color: #fff;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(255, 107, 74, 0.35);
+      }
+
+      .table {
+        display: grid;
+        gap: 12px;
+      }
+
+      .table-header,
+      .table-row {
+        display: grid;
+        grid-template-columns: 1.1fr 1fr 0.9fr 1fr 1fr 0.7fr;
+        gap: 12px;
+        align-items: center;
+      }
+
+      .table-header {
+        font-size: 12px;
+        text-transform: uppercase;
+        color: var(--muted);
+        letter-spacing: 0.08em;
+      }
+
+      .table-row {
+        padding: 12px 14px;
+        border-radius: 14px;
+        background: #fff;
+        border: 1px solid #ece9e1;
+      }
+
+      .pill {
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 600;
+        text-align: center;
+      }
+
+      .pill.buy {
+        background: rgba(27, 143, 98, 0.15);
+        color: var(--good);
+      }
+
+      .pill.sell {
+        background: rgba(192, 57, 43, 0.12);
+        color: var(--bad);
+      }
+
+      .summary {
+        display: grid;
+        gap: 10px;
+        padding: 16px;
+        border-radius: 16px;
+        background: #f0efe9;
+      }
+
+      .summary span {
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+        color: var(--muted);
+      }
+
+      .summary strong {
+        color: var(--ink);
+      }
+
+      .empty {
+        text-align: center;
+        color: var(--muted);
+        padding: 16px;
+        border: 1px dashed var(--line);
+        border-radius: 12px;
+      }
+
+      .actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .ghost {
+        background: transparent;
+        border: 1px solid var(--line);
+        color: var(--ink);
+      }
+
+      @media (max-width: 720px) {
+        .table-header,
+        .table-row {
+          grid-template-columns: 1fr 1fr;
+          grid-auto-rows: auto;
+        }
+
+        .table-header span:nth-child(n + 3),
+        .table-row span:nth-child(n + 3) {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header>
+        <div class="brand">
+          <h1>Trade Tape</h1>
+          <p>매수/매도 기록을 한눈에 정리하는 개인 매매장부.</p>
+        </div>
+        <div class="chip">Local Only</div>
+      </header>
+
+      <section class="grid">
+        <article class="card">
+          <h2>거래 입력</h2>
+          <p class="subtle">거래는 브라우저에만 저장됩니다.</p>
+          <form id="trade-form">
+            <div>
+              <label for="date">날짜</label>
+              <input type="date" id="date" required />
+            </div>
+            <div>
+              <label for="symbol">종목</label>
+              <input type="text" id="symbol" placeholder="예: 005930" required />
+            </div>
+            <div>
+              <label for="type">구분</label>
+              <select id="type">
+                <option value="BUY">매수</option>
+                <option value="SELL">매도</option>
+              </select>
+            </div>
+            <div class="row">
+              <div>
+                <label for="price">단가</label>
+                <input type="number" id="price" min="0" step="0.01" required />
+              </div>
+              <div>
+                <label for="quantity">수량</label>
+                <input type="number" id="quantity" min="1" step="1" required />
+              </div>
+            </div>
+            <div>
+              <label for="memo">메모</label>
+              <input type="text" id="memo" placeholder="이유나 메모" />
+            </div>
+            <button type="submit">거래 추가</button>
+          </form>
+        </article>
+
+        <article class="card">
+          <h2>요약</h2>
+          <div class="summary" id="summary">
+            <span><strong>총 매수</strong><span id="sum-buy">0</span></span>
+            <span><strong>총 매도</strong><span id="sum-sell">0</span></span>
+            <span><strong>거래 건수</strong><span id="sum-count">0</span></span>
+            <span><strong>순현금흐름</strong><span id="sum-net">0</span></span>
+          </div>
+          <div class="actions" style="margin-top: 16px;">
+            <button type="button" class="ghost" id="clear-data">전체 삭제</button>
+            <button type="button" class="ghost" id="export-data">CSV 내보내기</button>
+          </div>
+        </article>
+      </section>
+
+      <section class="card">
+        <h2>거래 기록</h2>
+        <div class="table">
+          <div class="table-header">
+            <span>날짜</span>
+            <span>종목</span>
+            <span>구분</span>
+            <span>단가</span>
+            <span>수량</span>
+            <span>금액</span>
+          </div>
+          <div id="trade-rows"></div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      const form = document.getElementById("trade-form");
+      const rows = document.getElementById("trade-rows");
+      const sumBuy = document.getElementById("sum-buy");
+      const sumSell = document.getElementById("sum-sell");
+      const sumCount = document.getElementById("sum-count");
+      const sumNet = document.getElementById("sum-net");
+      const clearBtn = document.getElementById("clear-data");
+      const exportBtn = document.getElementById("export-data");
+      const storageKey = "tradeTapeRecords";
+
+      const formatNumber = (value) =>
+        new Intl.NumberFormat("ko-KR").format(value);
+
+      const loadTrades = () => {
+        const raw = localStorage.getItem(storageKey);
+        return raw ? JSON.parse(raw) : [];
+      };
+
+      const saveTrades = (trades) => {
+        localStorage.setItem(storageKey, JSON.stringify(trades));
+      };
+
+      const renderTrades = () => {
+        const trades = loadTrades();
+        rows.innerHTML = "";
+
+        if (!trades.length) {
+          rows.innerHTML =
+            '<div class="empty">아직 기록된 거래가 없습니다.</div>';
+          updateSummary(trades);
+          return;
+        }
+
+        trades
+          .slice()
+          .reverse()
+          .forEach((trade) => {
+            const row = document.createElement("div");
+            row.className = "table-row";
+            const amount = trade.price * trade.quantity;
+            row.innerHTML = `
+              <span>${trade.date}</span>
+              <span>${trade.symbol}</span>
+              <span><span class="pill ${trade.type.toLowerCase()}">${
+              trade.type === "BUY" ? "매수" : "매도"
+            }</span></span>
+              <span>${formatNumber(trade.price)}</span>
+              <span>${formatNumber(trade.quantity)}</span>
+              <span>${formatNumber(amount)}</span>
+            `;
+            rows.appendChild(row);
+          });
+
+        updateSummary(trades);
+      };
+
+      const updateSummary = (trades) => {
+        const totals = trades.reduce(
+          (acc, trade) => {
+            const amount = trade.price * trade.quantity;
+            if (trade.type === "BUY") {
+              acc.buy += amount;
+            } else {
+              acc.sell += amount;
+            }
+            acc.count += 1;
+            acc.net = acc.sell - acc.buy;
+            return acc;
+          },
+          { buy: 0, sell: 0, count: 0, net: 0 }
+        );
+
+        sumBuy.textContent = formatNumber(totals.buy);
+        sumSell.textContent = formatNumber(totals.sell);
+        sumCount.textContent = formatNumber(totals.count);
+        sumNet.textContent = formatNumber(totals.net);
+      };
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const trade = {
+          date: document.getElementById("date").value,
+          symbol: document.getElementById("symbol").value.trim(),
+          type: document.getElementById("type").value,
+          price: Number(document.getElementById("price").value),
+          quantity: Number(document.getElementById("quantity").value),
+          memo: document.getElementById("memo").value.trim(),
+        };
+
+        if (!trade.date || !trade.symbol) {
+          return;
+        }
+
+        const trades = loadTrades();
+        trades.push(trade);
+        saveTrades(trades);
+        form.reset();
+        renderTrades();
+      });
+
+      clearBtn.addEventListener("click", () => {
+        if (!confirm("모든 거래를 삭제할까요?")) {
+          return;
+        }
+        saveTrades([]);
+        renderTrades();
+      });
+
+      exportBtn.addEventListener("click", () => {
+        const trades = loadTrades();
+        if (!trades.length) {
+          alert("내보낼 데이터가 없습니다.");
+          return;
+        }
+
+        const header = ["date", "symbol", "type", "price", "quantity", "memo"];
+        const rows = trades.map((trade) =>
+          header.map((key) => `"${String(trade[key] ?? "").replace(/"/g, """")}"`).join(",")
+        );
+        const csv = [header.join(","), ...rows].join("\n");
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "trades.csv";
+        link.click();
+        URL.revokeObjectURL(url);
+      });
+
+      const today = new Date().toISOString().slice(0, 10);
+      document.getElementById("date").value = today;
+      renderTrades();
+    </script>
+  </body>
+</html>
